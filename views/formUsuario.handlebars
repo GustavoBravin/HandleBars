@@ -1,0 +1,21 @@
+{{#if usuario}}
+<h1>Atualizar usuário</h1>
+<form action="/usuarios/{{usuario.id}}/uptade" method="post"></form>
+{{else }}
+<h2>Cadastre-se</h2>
+<form action="/usuarios/novo" method="post">
+    {{/if}}
+    <div>
+        <label for="nickname">Nickname: </label>
+        <input type="text" id="nickname" name="nickname" value="{{usuario.nickname}}" />
+    </div>
+    <div>
+        <label for="nome">Nome: </label>
+        <input type="text" id="nome" name="nome" />
+    </div>
+    {{#if usuario}}
+     <input type="submit" value="salvar">
+    {{else}}
+    <input type="submit" value="Cadastrar">
+    {{/if}}
+</form>

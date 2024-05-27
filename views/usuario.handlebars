@@ -1,0 +1,17 @@
+<h2>Usuários cadastrados</h2>
+{{#if usuarios}}
+<ul>
+    {{#each usuarios}}
+<tr>
+<td>{{this.id}}</td>
+<td>{{this.nome}}</td>
+<td>{{this.endereco}}</td>
+
+</tr>
+
+        
+    {{/each}}
+</ul>
+{{else}}
+    <p>Não há usuários cadastrados</p>
+{{/if}}
