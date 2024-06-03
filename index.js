@@ -1,25 +1,19 @@
+require("dotenv").config();
+const conn = require("./db/conn");
 const express = require("express");
 const exphbs = require("express-handlebars");
 const Usuario = require("./models/Usuario");
-
+const{where} = require("sequelizer")
 const app = express();
-
-var usuarios = [
-    {
-        nome: "Moniky",
-        endereco: "Rua José Domingos, São Vicente, n°636",
-    },
-    {
-        nome: "Mafer",
-        endereco: "Rua Senador, n°1958",
-    },
-];
 
 app.engine("handlebars", exphbs.engine());
 app.set("view engine","handlebars");
 
+app.use(express.urlencoded({ extended:true }));
+app.use(express.json())
+
 app.get("/",(req,res)=>{
-res.render("home",{usuarios})
+res.render("home")
 })
 
 app.get("/usuarios", async (req, res)=>{
@@ -33,7 +27,8 @@ res.render("formUsuario")
 
 app.post("/usuarios/novo", async (req, res) => {
     try {
-        const { nickname, nome } = req.body;
+        const {nickname,nome} = req.body;
+      
         
         const dadosUsuario = {
             nickname,
@@ -54,7 +49,20 @@ const usuario = await Usuario.findByPk(id,{raw: true})
 
 })
 
+app.post("/usuarios/:id/update", async (req, res)=> {
+    const id = parseInt(req.params.id)
+    const dadosUsuario = {
+        nickname: req.body.nickname,
+        nome: req.body.nome,
+    };
 
+    const retorno = await Usuario.update({dadosUsuario,  where: {id:id} })
+    if(retorno>0){
+        res.redirect("/usuarios")
+    }else{
+        res.send("Erro ao atualizar user :(")
+    }
+});
 app.listen(8000,()=>{
 console.log("Servidor rodando!")
 })
