@@ -102,6 +102,7 @@
     "safer-buffer": "^2.1.2",
     "semver": "^7.6.2",
     "send": "^0.18.0",
+    "sequelize": "^6.37.3",
     "sequelizer": "^1.1.4",
     "serve-static": "^1.15.0",
     "set-function-length": "^1.2.2",

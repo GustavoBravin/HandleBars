@@ -1,0 +1,27 @@
+{{#if usuario}}
+<h1>Atualizar jogo</h1>
+<form action="/usuarios/{{usuario.id}}/uptade" method="post">
+{{else }}
+<h2>Cadastrar jogo</h2>
+<form action="/usuarios/novo" method="post">
+    {{/if}}
+
+        <div>
+
+            <label for="titulo">Titulo:</label>
+            <input type="text" id="titulo" name="titulo"/>
+        </div>
+
+        <div>
+
+            <label for="descricao">Descrição: </label>
+            <input type="text" id="descricao" name="descricao"/>
+        </div>
+
+        <div>
+
+            <label for="precoBase">Preço Base: </label>
+            <input type="text" id="preco" name="preco"/>
+        </div>
+        <input type="submit" value="Cadastrar">
+    </form>
