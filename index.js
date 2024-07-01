@@ -1,9 +1,11 @@
 require("dotenv").config();
 const conn = require("./db/conn");
+const Usuario = require("./models/Usuario");
+const Jogo = require("./models/Jogo")
 const express = require("express");
 const exphbs = require("express-handlebars");
-const Usuario = require("./models/Usuario");
-const { where } = require("sequelizer")
+const Cartao = require("./models/Cartao");
+const Conquista = require("./models/Conquista");
 const app = express();
 
 app.engine("handlebars", exphbs.engine());
@@ -43,6 +45,78 @@ app.post("/usuarios/novo", async (req, res) => {
     }
 });
 
+
+app.get("/usuarios/:id/uptade", async (req, res) => {
+    const id = parseInt(req.params.id)
+    const usuario = await Usuario.findByPk(id, { raw: true })
+
+})
+
+app.post("/usuarios/:id/update", async (req, res) => {
+    const id = parseInt(req.params.id)
+    const dadosUsuario = {
+        nickname: req.body.nickname,
+        nome: req.body.nome,
+    };
+
+    const retorno = await Usuario.update({ dadosUsuario, where: { id: id } })
+    if (retorno > 0) {
+        res.redirect("/usuarios")
+    } else {
+        res.send("Erro ao atualizar user :(")
+    }
+});
+
+app.post("/usuarios/:id/delete", async (req, res) => {
+    const id = parseInt(req.params.id);
+
+    const retorno = await Usuario.destroy({ where: { id: id } });
+
+    if (retorno > 0) {
+        res.redirect("/usuarios");
+    } else {
+        res.send("Erro ao excluir usuário");
+    }
+});
+
+app.get("/usuarios/:id/novoCartao", async (req, res) => {
+    const id = parseInt(req.params.id);
+    const usuario = await Usuario.findByPk(id, { raw: true });
+
+    res.render("formCartao", { usuario });
+});
+
+app.post("/usuarios/:id/novoCartao", async (req, res) => {
+    const id = parseInt(req.params.id);
+
+    const dadosCartao = {
+        numero: req.body.numero,
+        nome: req.body.nome,
+        codSeguranca: req.body.codSeguranca,
+        UsuarioId: id,
+    };
+
+    await Cartao.create(dadosCartao);
+    res.redirect(`/usuarios/${id}/cartoes`);
+})
+
+app.get("/usuarios/:id/cartoes", async (req, res) => {
+    const id = parseInt(req.params.id);
+    const usuario = await Usuario.findByPk(id, { raw: true });
+
+    const cartoes = await Cartao.findAll({
+        raw: true,
+        where: { UsuarioId: id },
+    });
+
+    res.render("cartoes.handlebars", { usuario, cartoes });
+});
+
+app.get("/jogos", async (req, res) => {
+    const jogos = await Jogo.findAll({ raw: true });
+    res.render("jogos", { jogos });
+});
+
 app.get("/jogos/novo", (req, res) => {
     res.render("formJogo");
 });
@@ -69,26 +143,73 @@ app.post("/jogos/novo", async (req, res) => {
 
 });
 
-app.get("/usuarios/:id/uptade", async (req, res) => {
-    const id = parseInt(req.params.id)
-    const usuario = await Usuario.findByPk(id, { raw: true })
+app.get("/jogos/:id/update", async (req, res) => {
+    const id = parseInt(req.params.id);
+    const jogo = await Jogo.findByPk(id, { raw: true });
+    res.render("formJogo", { jogo });
+});
 
-})
-
-app.post("/usuarios/:id/update", async (req, res) => {
-    const id = parseInt(req.params.id)
-    const dadosUsuario = {
-        nickname: req.body.nickname,
+app.post("/jogos/:id/update", async (req, res) => {
+    const id = parseInt(req.params.id);
+    const dadosJogo = {
         nome: req.body.nome,
+        descricao: req.body.descricao,
+        preco: req.body.preco
     };
+    const retorno = await Jogo.update(dadosJogo, { where: { id: id } })
 
-    const retorno = await Usuario.update({ dadosUsuario, where: { id: id } })
     if (retorno > 0) {
-        res.redirect("/usuarios")
+        res.redirect("jogos")
     } else {
-        res.send("Erro ao atualizar user :(")
+        res.send("Erro ao atualizar o jogo")
     }
 });
+
+app.post("/jogos/:id/delete", async (req, res) => {
+    const id = parseInt(req.params.id);
+
+    const retorno = await Jogo.destroy({ where: { id: id } });
+
+    if (retorno > 0) {
+        res.redirect("/jogos")
+    } else {
+        res.send("Erro ao deletar o jogo")
+    }
+});
+
+app.get("/jogos/:id/novaConquista", async (req, res) => {
+    const id = parseInt(req.params.id);
+    const jogo = await Jogo.findByPk(id, { raw: true });
+
+    res.render("formConquista", { jogo });
+});
+
+app.post("/jogos/:id/novaConquista", async (req, res) => {
+    const id = parseInt(req.params.id);
+
+    const dadosConquista = {
+        titulo: req.body.titulo,
+        descricao: req.body.descricao,
+        JogoId: id,
+    };
+
+    await Conquista.create(dadosConquista);
+
+    res.redirect(`/jogos/${id}/conquistas`);
+});
+
+app.get("/jogos/:id/conquistas", async (req, res) => {
+    const id = parseInt(req.params.id);
+    const jogo = await Jogo.findByPk(id, { raw: true });
+
+    const conquista = await Conquista.findAll({
+        raw: true,
+        where: { JogoId: id },
+    });
+
+    res.render("conquista.handlebars", { jogo, conquista });
+});
+
 app.listen(8000, () => {
     console.log("Servidor rodando!")
 })
