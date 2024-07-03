@@ -1,27 +1,27 @@
-{{#if usuario}}
+{{#if jogo}}
 <h1>Atualizar jogo</h1>
-<form action="/usuarios/{{usuario.id}}/uptade" method="post">
-{{else }}
-<h2>Cadastrar jogo</h2>
-<form action="/usuarios/novo" method="post">
-    {{/if}}
+<form action="/jogoss/{{jogo.id}}/update" method="post">
+    {{else }}
+    <h2>Cadastrar jogo</h2>
+    <form action="/jogos/novo" method="post">
+        {{/if}}
 
         <div>
+    <label for="nome">Nome: </label>
+    <input type="text" id="nome" name="nome" value="{{jogo.nome}}" />
+  </div>
+  <div>
+    <label for="valorJogo">Valor do jogo: </label>
+    <input type="text" id="valorJogo" name="valorJogo" value="{{jogo.valorJogo}}" />
+  </div>
+  <div>
+    <label for="descricaoJogo">Descrição do jogo: </label>
+    <input type="text" id="descricaoJogo" name="descricaoJogo" value="{{jogo.descricaoJogo}}" />
+  </div>
 
-            <label for="titulo">Titulo:</label>
-            <input type="text" id="titulo" name="titulo"/>
-        </div>
-
-        <div>
-
-            <label for="descricao">Descrição: </label>
-            <input type="text" id="descricao" name="descricao"/>
-        </div>
-
-        <div>
-
-            <label for="precoBase">Preço Base: </label>
-            <input type="text" id="preco" name="preco"/>
-        </div>
-        <input type="submit" value="Cadastrar">
+        {{#if jogo}}
+        <input type="submit" value="Salvar">
+        {{else}}
+        <input type="submit" value="Cadastrar" />
+        {{/if}}
     </form>

@@ -1,17 +1,27 @@
-<h2>Usuários cadastrados</h2>
-{{#if usuarios}}
-<ul>
-    {{#each usuarios}}
-<tr>
-<td>{{this.id}}</td>
-<td>{{this.nome}}</td>
-<td>{{this.endereco}}</td>
+<h1>Usuários Cadastrados</h1>
 
-</tr>
+<a href="/usuarios/novo">Cadastrar usuário</a>
 
-        
-    {{/each}}
-</ul>
-{{else}}
-    <p>Não há usuários cadastrados</p>
-{{/if}}
+<table border="1">
+ 
+  <tr>
+
+    <th>Id</th>
+    <th>Nickname</th>
+    <th>Nome</th>
+  </tr>
+  {{#each usuarios}}
+    <tr>
+      <td>{{this.id}}</td>
+      <td>{{this.nickname}}</td>
+      <td>{{this.nome}}</td>
+      <td>
+        <a href="/usuarios/{{this.id}}/update">Atualizar</a>
+        <form action="/usuarios/{{this.id}}/delete" method="post">
+          <input type="submit" value="Excluir" />
+        </form>
+        <a href="/usuarios/{{this.id}}/cartoes">Ver cartões</a>
+      </td>
+    </tr>
+  {{/each}}
+</table>

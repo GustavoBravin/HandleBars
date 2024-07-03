@@ -20,7 +20,7 @@ app.get("/", (req, res) => {
 
 app.get("/usuarios", async (req, res) => {
     const usuarios = await Usuario.findAll({ raw: true });
-    res.render("usuarios", { usuarios });
+    res.render("usuario", { usuarios });
 });
 
 app.get("/usuarios/novo", (req, res) => {
@@ -46,10 +46,11 @@ app.post("/usuarios/novo", async (req, res) => {
 });
 
 
-app.get("/usuarios/:id/uptade", async (req, res) => {
+app.get("/usuarios/:id/update", async (req, res) => {
     const id = parseInt(req.params.id)
     const usuario = await Usuario.findByPk(id, { raw: true })
 
+    res.render("formUsuario", { usuario });
 })
 
 app.post("/usuarios/:id/update", async (req, res) => {
@@ -59,7 +60,7 @@ app.post("/usuarios/:id/update", async (req, res) => {
         nome: req.body.nome,
     };
 
-    const retorno = await Usuario.update({ dadosUsuario, where: { id: id } })
+    const retorno = await Usuario.update( dadosUsuario,{ where: { id: id } })
     if (retorno > 0) {
         res.redirect("/usuarios")
     } else {
@@ -144,26 +145,29 @@ app.post("/jogos/novo", async (req, res) => {
 });
 
 app.get("/jogos/:id/update", async (req, res) => {
-    const id = parseInt(req.params.id);
-    const jogo = await Jogo.findByPk(id, { raw: true });
-    res.render("formJogo", { jogo });
+  const id = parseInt(req.params.id);
+  const jogo = await Jogo.findByPk(id, { raw: true });
+
+  res.render("formJogo", { jogo});
 });
 
-app.post("/jogos/:id/update", async (req, res) => {
-    const id = parseInt(req.params.id);
-    const dadosJogo = {
-        nome: req.body.nome,
-        descricao: req.body.descricao,
-        preco: req.body.preco
-    };
-    const retorno = await Jogo.update(dadosJogo, { where: { id: id } })
+app.post("/jogos/:id/update", async (req, res) =>{
+  const id = parseInt(req.params.id);
+  const dadosJogos = {
+      nome: req.body.nome,
+      valorJogo: req.body.valorJogo,
+      descricaoJogo: req.body.descricaoJogo,
+  };
 
-    if (retorno > 0) {
-        res.redirect("jogos")
-    } else {
-        res.send("Erro ao atualizar o jogo")
-    }
+  const retorno = await Jogo.update(dadosJogos, { where: { id: id }});
+
+  if(retorno>0){
+      res.redirect("/jogos");
+  } else {
+      res.send("erro ao atualizar o jogo")
+  }
 });
+
 
 app.post("/jogos/:id/delete", async (req, res) => {
     const id = parseInt(req.params.id);
